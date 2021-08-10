@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:th="http://www.thymeleaf.org" 
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+xmlns:data="http://www.thymeleaf.org/extras/data"
+xmlns:crowde="http://crowde.com.br"
+ layout:decorate="~{layout/LayoutPadrao}">
+
+<head>
+    <title>Cadastro Cliente</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors/bootstrap-switch.min.css}" />
+    
+</head>
+<section layout:fragment="conteudo" class="cw-layout-content  js-content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <h1 th:if="${cliente.novo}">Cadastro de cliente</h1>
+            <h1 th:unless="${cliente.novo}" th:text="|Edição do(a) cliente ${cliente.nome}|"></h1>
+        </div>
+    </div>
+    <div class="container-fluid">
+       
+        
+        <form method="post" th:object="${cliente}" class="form-vertical  js-form-loading" 
+        th:action="${cliente.novo} ? @{/clientes/novo} : @{/clientes/{id}(id=${cliente.id})}">
+        
+            <crowde:message/>
+            
+            <input type="hidden" th:field="*{id}" id="idCliente"/>
+            
+             <div class="alert alert-danger hidden js-messagem-cadastro-rapido-cor" role="alert"></div>
+            <div class="form-group fr-required" crowde:classforerror="nome">
+                <label for="nome" class="control-label">Nome</label>
+                <input id="nome" type="text" class="form-control js-letra" autofocus="autofocus" th:field="*{nome}" />
+            </div>
+            
+            <div class="row">
+               
+                <div class="form-group col-sm-2 fr-required" crowde:classforerror="tipoCliente">
+                    <label class="control-label">Tipo cliente</label>
+                    <div>
+                        <th:block th:each="tipo : ${tipoPessoas}">
+                            <div class="radio  radio-inline">
+                                
+                                <input type="radio" th:id="|id_${tipo}|" 
+                                data:documento="${tipo.documento}" data:mascara="${tipo.mascara}"  
+                                class="js-radio-tipo-pessoa" th:value="${tipo}" th:field="*{tipoCliente}">
+                                
+                                <label th:for="|id_${tipo}|" th:text="${tipo.descricao}">Física</label>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+                
+                <div class="form-group col-sm-2">
+                    <label>Cliente VIP?</label>
+                    <div>
+                        <input type="checkbox" class="js-status" th:field="*{vip}" data-size="small" data-off-color="danger" data-on-text="Sim" data-off-text="Não" />
+                    </div>
+                </div>
+                
+                <div class="form-group col-sm-4 fr-required" crowde:classforerror="sexo">
+                    <label class="control-label">Sexo</label>
+                    <div>
+                        <th:block th:each="sexo : ${sexoPessoas}">
+                            <div class="radio  radio-inline">
+                                <input type="radio" th:field="*{sexo}" th:id="|id_pessoa_${sexo}|" th:value="${sexo}">
+                                <label th:for="|id_pessoa_${sexo}|" th:text="${sexo.descricao}">Masculino</label>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+                
+                <div class="col-sm-4" >
+                    <div class="form-group js-data fr-required" crowde:classforerror="dataNascimento">
+                        <label for="data-nascimento" class="control-label">Data Nascimento</label>
+                        <input id="data-nascimento" type="text" class="form-control js-date" th:field="*{dataNascimento}" autocomplete="off"/>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row">
+            
+                <div class="form-group col-sm-4" crowde:classforerror="cpfCnpj">
+                    <label for="cpf-cnpj"  class="control-label">CPF/CNPJ</label>
+                    <input id="cpf-cnpj" type="text" th:field="*{cpfCnpj}" class="form-control" disabled/>
+                </div>
+                
+                <div class="form-group col-sm-4">
+                    <label for="rg">RG</label>
+                    <input id="rg" type="text" class="form-control" th:field="*{rg}" />
+                </div>
+                
+                <div class="col-sm-4">
+                    <div class="form-group fr-required" crowde:classforerror="telefoneCelular">
+                        <label for="telefone-celular" class="control-label">Tel. Celular</label>
+                        <input id="telefone-celular" type="text" class="form-control js-phone-number" th:field="*{telefoneCelular}" />
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row">
+            
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="telefone-fixo">Tel. Secundário</label>
+                        <input id="telefone-fixo" type="text" class="form-control js-phone-number" th:field="*{telefoneFixo}" />
+                    </div>
+                </div>
+                
+                <div class="form-group col-sm-8">
+                    <label for="email">E-mail</label>
+                    <input id="email" type="text" class="form-control" th:field="*{email}" />
+                </div>
+                
+            </div>
+            
+            <div class="row">
+            
+                <div class="form-group fr-required  col-sm-4" crowde:classforerror="endereco.logradouro.cep">
+                <label for="cep" class="control-label">CEP</label>
+                 <div class="fr-field-action">                    
+                    <input type="text" class="form-control js-cep" id="cep"  data:url="@{/logradouros}" th:field="*{endereco.logradouro.cep}"/>
+                      <div class="fr-field-action__icon js-img-loading" style="display: none;">
+                          	<img th:src="@{/imagens/mini-loading.gif}"/>
+                        </div>
+                 </div>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label for="numero">Número</label>
+                    <input type="text" class="form-control" id="numero" th:field="*{endereco.numero}"/>
+                </div>
+                
+                 <div class="form-group fr-required col-sm-6" crowde:classforerror="endereco.logradouro.bairro">
+                    <label for="bairro" class="control-label">Bairro</label>
+                    <input type="text" class="form-control" id="bairro" th:field="*{endereco.logradouro.bairro}"/>
+                </div>
+                
+                
+            </div>
+            
+            <div class="form-group fr-required" crowde:classforerror="endereco.logradouroAtual">
+                <label for="logradouro" class="control-label">Logradouro</label>
+                <input type="text" class="form-control" id="logradouro" th:field="*{endereco.logradouroAtual}" />
+            </div>
+            
+            <div class="row">
+            
+              <div class="form-group  col-sm-4">
+                    <label for="pontoReferencia">Referência</label>
+                    <input type="text" class="form-control" id="pontoReferencia" th:field="*{endereco.pontoReferencia}"/>
+                </div>
+                
+                <div class="form-group  col-sm-4" >
+                    <label for="estado">Estado</label>
+                    <select id="estado" class="form-control selectpicker show-menu-arrow" data-size="10" data-live-search="true">
+                        <option value="">Selecione o estado</option>
+                        <option th:each="estado : ${estados}" th:value="${estado.id}" th:text="|${estado.descricao} -  ${estado.uf}|"></option>
+                    </select>
+                </div>
+                
+                <div class="form-group fr-required col-sm-4">
+                    <label for="cidade" class="control-label">Cidade</label>
+                    <div class="fr-field-action">
+	                    <select id="cidade" class="form-control selectpicker show-menu-arrow" data-live-search="true" data-size="10" th:field="*{endereco.cidade}" data:url="@{/cidades}">
+	                        <option value="">Selecione a cidade</option>
+	                    </select>
+	                    
+	                    <div class="fr-field-action__icon js-img-loading" style="display: none;">
+                          	<img th:src="@{/imagens/mini-loading.gif}"/>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="form-group">
+                <label for="observacao">Observações</label>
+                <textarea id="observacao" rows="5" class="form-control" th:field="*{observacao}"></textarea>
+            </div>
+            
+            
+	            <div class="form-group ">
+	                <a th:href="@{/clientes}" class="btn  btn-danger">Cancelar</a>
+	                <button type="submit" class="btn  btn-primary">Salvar e Continuar</button>
+	            </div>
+            
+            
+        </form>
+    </div>
+</section>
+<th:block layout:fragment="js-auxiliar">
+    
+    <script th:src="@{/layout/javascripts/vendors/bootstrap-switch.min.js}"></script>
+    <script th:src="@{/javascript/pessoa.input-consulta-logradouro.js}"></script>
+    <script th:src="@{/javascript/pessoa.combo-estado-cidade.js}"></script>    
+    <script th:src="@{/javascript/pessoa.mascara-cpf-cnpj.js}"></script>
+    <script type="text/javascript">
+    $('.js-status').bootstrapSwitch();
+
+    
+    
+   
+    
+    
+    </script>
+</th:block>
+
+</html>

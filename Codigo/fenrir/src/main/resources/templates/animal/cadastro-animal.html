@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+				xmlns:th="http://www.thymeleaf.org"
+				xmlns:data="http://www.thymeleaf.org/extras/data"
+				xmlns:crowde="http://crowde.com.br"
+				layout:decorate="~{layout/LayoutPadrao}">
+
+<head>
+    <title>Cadastrar Animal</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors/bootstrap-switch.min.css}" />    
+    <link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors/upload.min.css}" />
+</head>
+
+<body>
+    <section layout:fragment="conteudo" class="cw-layout-content  js-content">
+        <div class="page-header">
+            <div class="container-fluid">
+                <h1 th:if="${animal.novo}">Cadastro de Animal</h1>
+            	<h1 th:unless="${animal.novo}" th:text="|Edição do animal ${animal.nome}|"></h1>
+            </div>
+        </div>
+        <div class="container-fluid">
+        		
+        
+            <form method="POST" th:object="${animal}" class="form-vertical  js-form-loading" 
+            th:action="${animal.novo} ? @{/animais/novo/{idCliente}(idCliente=${cliente.id})} : @{/animais/{id}(id=${animal.id})}">
+                
+                <crowde:message/>
+                
+                <input type="hidden" th:field="*{id}" id="idAnimal"/>
+                <input type="hidden" id="racaSelecionada" th:unless="${animal.novo}"  th:value="${animal.raca.id}">
+                
+                <div class="form-group">
+                    <h1 style="text-align:center;"><span class = "label label-default" th:text="|Meu amigo(a) é ${cliente.nome}|">Meu pai é nome</span></h1>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-8 fr-required" crowde:classforerror="nome">
+                        <label for="nome" class="control-label">Nome</label>
+                        <input id="nome" type="text" class="form-control" th:field="*{nome}"/>
+                    </div>
+                    <div class="form-group col-sm-4 fr-required" crowde:classforerror="pelagem">
+                        <label for="pelagem" class="control-label">Pelagem</label>
+                        <input id="cpf" type="text" class="form-control" th:field="*{pelagem}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-4 fr-required" crowde:classforerror="sexo">
+                        <label class="control-label" >Sexo</label>
+                        <div>
+                            <th:block th:each="sexoAnimal : ${sexoAnimais}">
+                                <div class="radio radio-inline">
+                                    <input type="radio" name="sexo" th:id="|id_animal_${sexoAnimal}|" th:value="${sexoAnimal}" th:field="*{sexo}">
+                                    <label th:for="|id_animal_${sexoAnimal}|" th:text="${sexoAnimal.descricao}">Macho</label>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+                    <div class="form-group  col-sm-2" th:unless="${animal.novo}">
+                        <label class="control-label">Status</label>
+                        
+                        <div>
+                            <input type="checkbox" class="js-status" data-size="small" data-off-color="danger" data-on-text="Vivo" 
+                            data-off-text="Morto" checked="checked" th:field="*{statusAnimal}"/>
+                        </div>
+                    </div>
+                    	<div class="form-group col-sm-2 fr-required" crowde:classforerror="peso">
+                        	<label for="telefone-celular"  class="control-label">Peso</label>
+                            <input id="telefone-celular" type="text" class="form-control js-plain" th:field="*{peso}"/>
+                        </div>
+                    <div class="col-sm-4" crowde:classforerror="dataNascimento">
+                        <div class="form-group js-data fr-required">
+                            <label for="data-nascimento" class="control-label">Data Nascimento</label>
+                            <input id="data-nascimento" type="text" class="form-control js-date" th:field="*{dataNascimento}" autocomplete="off"/>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                
+                    <div class="form-group  col-sm-4 fr-required" crowde:classforerror="raca.especie">
+                        <label for="especie"  class="control-label">Espécie</label>
+                        <div class="fr-field-action">
+                            <select id="especie" class="form-control selectpicker" data-live-search="true" th:field="*{raca.especie}">
+                                <option value="">Selecione a espécie</option>
+                                <option  th:each="especie : ${especies}" th:value="${especie.id}" th:text="${especie.descricao}">especie</option>
+                            </select>
+                            <div class="fr-field-action__icon" style="display: none;">
+                                <a href="#" data-toggle="modal" data-target="#modalCadastroRapidoEspecie"> <i
+									class="glyphicon  glyphicon-plus-sign  fr-glyphicon-large"></i>
+								</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group  col-sm-4 fr-required"  crowde:classforerror="raca">
+                        <label for="racaAnimal" class="control-label">Raça</label>
+                        <div class="fr-field-action">
+                        
+                            <select id="racaAnimal" class="form-control selectpicker" data-live-search="true" th:field="*{raca}" data:url="@{/racas}">                                
+                                
+                            </select>
+                            
+                            <div class="fr-field-action__icon js-img-loading" style="display: none;">
+                            	<img th:src="@{/imagens/mini-loading.gif}"/>
+                            </div>
+                            
+                            <div class="fr-field-action__icon"  style="display: none;" >
+                                <a href="#" data-toggle="modal"  data-target="#modalCadastroRapidoRaca"> <i
+									class="glyphicon  glyphicon-plus-sign  fr-glyphicon-large"></i>
+								</a>
+                            </div>
+                            
+                                                       
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-4 form-group fr-required" crowde:classforerror="cor">
+                        <label for="cor" class="control-label">Cor</label>
+                        <div class="fr-field-action">
+                            <select id="corAnimal" class="form-control selectpicker" data-live-search="true" th:field="*{cor}">
+                                <option value="">Selecione a cor</option>
+                                <option th:each="cor : ${cores}" th:value="${cor.id}" th:text="${cor.descricao}"></option>
+                            </select>
+                            <div class="fr-field-action__icon">
+                                <a href="#" data-toggle="modal" data-target="#modalCadastroRapidoCor"> <i
+									class="glyphicon  glyphicon-plus-sign  fr-glyphicon-large"></i>
+								</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="form-group">
+                    <label for="observacao">Observações</label>
+                    <textarea id="observacao" rows="3" class="form-control" th:field="*{prontuario.observacao}"></textarea>
+                </div>
+                <div class="row">
+                	<div class="form-group col-sm-12">           
+                	 <input type="hidden" th:field="*{imagem}">
+                	<input type="hidden" th:field="*{contentType}">
+                	<input type="hidden" th:field="*{novaFoto}">
+                	     	
+                		<label class="control-label">Foto</label>
+                		<div class="js-foto-animal" data:url-fotos="@{/fotos}">
+	                		<div id="uploadDrop" class="fr-upload">
+	                			<i class="glyphicon glyphicon-cloud-upload "></i>
+	                			<span>Arraste a foto aqui ou</span>
+	                			<a class="fr-upload-form-file">selecione.<input id="uploadSelect" type="file" accept=".jpg, .jpeg, .png"/> </a>         			
+	                		</div>
+                		</div>
+                	</div>              	
+                	
+                </div>
+                
+                
+                <div class="form-group">
+                    <a th:href="@{/clientes}" class="btn  btn-danger">Cancelar</a>
+                    <button class="btn  btn-primary" type="submit">Salvar</button>
+                </div>
+            </form>
+        </div>
+        <div th:replace="estilo/CadastroRapidoCor :: modal-cor"></div>
+        <div th:replace="estilo/CadastroRapidoRaca :: modal-raca"></div>
+        <div th:replace="estilo/CadastroRapidoEspecie :: modal-especie"></div>
+        <th:block th:replace="hbs/FotoEntidade"></th:block>
+    </section>
+    <th:block layout:fragment="js-auxiliar">
+        
+        <script th:src="@{/layout/javascripts/vendors/bootstrap-switch.min.js}"></script>
+        <script th:src="@{/javascript/animal.combo-especie-raca.js}"></script>
+        <script th:src="@{/javascript/cor.cadastro-rapido.js}"></script>
+        <script th:src="@{/layout/javascripts/vendors/uikit.min.js}"></script>
+        <script th:src="@{/layout/javascripts/vendors/upload.min.js}"></script>
+        <script th:src="@{/layout/javascripts/vendors/handlebars-v4.0.11.js}"></script>
+        <script th:src="@{/javascript/animal.upload-foto.js}"></script>
+        <script type="text/javascript">
+        $('.js-status').bootstrapSwitch();
+        $('.js-data input').datepicker({
+            language: "pt-BR",
+            orientation: "bottom left",
+            autoclose: true,
+            todayHighlight: true
+
+        });
+        
+        
+       
+        </script>
+    </th:block>
+</body>
+
+</html>

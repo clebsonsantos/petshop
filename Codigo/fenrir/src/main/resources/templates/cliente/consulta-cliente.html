@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.fr.org/1999/xhtml" 
+		xmlns:th="http://www.thymeleaf.org" 
+		xmlns:data="http://www.thymeleaf.org/extras/data"
+		xmlns:crowde="http://crowde.com.br"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+		layout:decorate="~{layout/LayoutPadrao}">
+
+<head>
+    <title>Pesquisa de Cliente</title>
+</head>
+<section layout:fragment="conteudo" class="cw-layout-content  js-content">
+    <div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-8">
+						<h1>
+							Pesquisa de clientes
+						</h1>
+					</div>
+					
+					<div class="col-xs-4">
+						<div class="cw-page-header-controls">
+							<a class="btn btn-default" th:href="@{/clientes/novo}" data-toggle="tooltip" data-placement="bottom" title="Novo Cliente">
+								<i class="fa  fa-plus-circle"></i> <span class="hidden-xs  hidden-sm">Novo cliente</span>
+							</a>						
+							
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+    
+    <div class="container-fluid" style="margin-top: 10px;">
+	<form method="GET" th:object='${clienteFilter}'>
+		<div class="row">
+			<div class="form-group col-sm-4">
+				<label class="control-label" for="cpf">CPF/CNPJ</label>
+				<input type="text" class="form-control" autofocus="autofocus" id="cpf" th:field="*{cpfCnpj}"/>			
+			</div>
+			<div class="form-group col-sm-4">
+				<label class="control-label" for="rg">RG</label>
+				<input type="text" class="form-control" id="rg" th:field="*{rg}"/>			
+			</div>		
+			<div class="form-group col-sm-4">
+				<label class="control-label" for="telefone">Telefone</label>
+				<input type="text" class="form-control" id="telefone" th:field="*{telefone}"/>			
+			</div>						
+		</div>
+		<div class="row">
+			<div class="form-group col-sm-6">
+				<label class="control-label" for="nome">Nome</label>
+				<input type="text" class="form-control" id="nome" th:field="*{nome}"/>			
+			</div>
+			
+			<div class="form-group col-sm-6">
+				<label class="control-label" for="email">E-mail</label>
+				<input type="text" class="form-control" id="email" th:field="*{email}"/>			
+			</div>
+		</div>
+		<button type="submit" class="btn btn-primary">Pesquisar</button>
+	</form>
+
+		
+			<div class="table-responsive fr-tabela-simples">
+				<table id="tabela-produtos" class="table  table-hover">
+					<thead class="cw-table-header-solid">
+						<tr>														
+							<th class="table-clientes-col-nome">Nome</th>
+							<th class="table-clientes-col-telefone">Tel. Principal</th>
+							<th class="table-clientes-col-telefone">Tel. Auxiliar</th>
+							<th class="table-clientes-col-email">E-mail</th>
+							<th class="table-clientes-col-tipo">Cliente</th>							
+							<th class="table-clientes-col-acoes">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="cliente : ${pagina.conteudo}">							
+							<td class="table-clientes-col-nome" th:text="${cliente.nome}"></td>
+							<td class="table-clientes-col-telefone"	th:text="${cliente.telefoneCelular}"></td>
+							<td class="table-clientes-col-telefone" th:text="${cliente.telefoneFixo}"></td>
+							<td class="table-clientes-col-email" th:text="${cliente.email}"></td>
+							<td class="table-clientes-col-tipo"><span class="label"
+								th:classappend="${cliente.vip}? label-primary: label-default"
+								th:text="(${cliente.vip? 'VIP': 'COMUM'})">Comum</span></td>
+							<td class="table-clientes-col-acoes">
+								<div class="btn-group">
+										 <a  th:id="|id_animal_${cliente.id}|" 
+		                            th:href="@{/animais/novo/{idCliente} (idCliente=${cliente.id})}" 
+		                            class="btn  btn-default" data-toggle="tooltip" data-placement="bottom" 
+		                            title="Adicionar animal"><em class="fa fa-paw"></em></a>
+		                            
+		                            <a th:id="|id_editar_${cliente.id}|" 
+		                            th:href="@{/clientes/{id}(id=${cliente.id})}" 
+		                            class="btn  btn-default" data-toggle="tooltip" data-placement="bottom" 
+		                            title="Editar"><em class="fa fa-pencil-square-o"></em></a>
+		                            
+		                            <a th:id="|id_detalhe_${cliente.id}|" 
+		                            th:href="|@{/clientes/prontuarios/{id}(id=${cliente.id})}|" 
+		                            class="btn  btn-default" data-toggle="tooltip" data-placement="bottom" 
+		                            title="Prontuários"><em class="fa fa-file-text-o"></em></a>
+		                            
+		                            <a class="btn  btn-danger js-exclusao-btn" 
+		                            data-toggle="tooltip" data-placement="bottom" href="#" 
+		                            data:url="@{/clientes/{id}(id=${cliente.id})}" data:objeto="${cliente.nome}" data:excluir="true" 
+		                            title="Excluir"><em class="fa  fa-trash"></em></a>
+								</div>
+							</td>
+
+						</tr>
+						 <tr th:if="${pagina.vazia}">
+                       	 	<td colspan="7"> Nenum cliente encontrado</td>                        
+                        </tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="col-sm-12 text-center" th:if="${not pagina.vazia}">
+				<nav>
+					<ul class="pagination pagination-sm" th:with="paginaAtual=${pagina.atual}">
+						<li th:class="${pagina.primeira} ? disabled">
+					      <a th:href="${pagina.urlParaPagina( paginaAtual - 1)}" th:remove="${pagina.primeira} ? tag">
+					        <span aria-hidden="true">&laquo;</span>
+					      </a>
+					    </li>
+						<th:block th:each = "p : ${#numbers.sequence(1,pagina.total)}" th:with="numeroPagina=${p-1}">
+							<li th:class="${paginaAtual == numeroPagina}? active" >
+								<a th:href="${pagina.urlParaPagina(numeroPagina)}">[[${p}]]</a>
+							</li>
+						</th:block>					
+						
+						<li th:class="${pagina.ultima} ? disabled">
+					      <a th:href="${pagina.urlParaPagina(paginaAtual + 1)}" th:remove="${pagina.ultima} ? tag" aria-label="Next">
+					        <span aria-hidden="true">&raquo;</span>
+					      </a>
+					    </li>
+					</ul>
+				</nav>
+	
+			</div>
+	</div>
+
+		
+</section>
+ 	
+
+</html>

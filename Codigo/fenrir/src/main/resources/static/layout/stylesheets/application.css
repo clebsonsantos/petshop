@@ -1,0 +1,53 @@
+.table-pesq-col-moeda {
+  min-width: 100px;
+  text-align: center;
+  display: none !important;
+}
+@media (min-width: 992px) {
+  .table-pesq-col-moeda {
+    display: block !important;
+  }
+  table.table-pesq-col-moeda {
+    display: table !important;
+  }
+  tr.table-pesq-col-moeda {
+    display: table-row !important;
+  }
+  th.table-pesq-col-moeda,
+  td.table-pesq-col-moeda {
+    display: table-cell !important;
+  }
+}
+.table-pesq-col-int {
+  min-width: 100px;
+  text-align: center;
+  display: none !important;
+}
+@media (min-width: 992px) {
+  .table-pesq-col-int {
+    display: block !important;
+  }
+  table.table-pesq-col-int {
+    display: table !important;
+  }
+  tr.table-pesq-col-int {
+    display: table-row !important;
+  }
+  th.table-pesq-col-int,
+  td.table-pesq-col-int {
+    display: table-cell !important;
+  }
+}
+.table-pesq-col-status {
+  min-width: 50px;
+  text-align: center;
+}
+.table-pesq-col-acoes {
+  min-width: 100px;
+  text-align: center;
+}
+
+.table-pesq-col-text{
+  min-width: 105px;
+  text-align: center;
+}

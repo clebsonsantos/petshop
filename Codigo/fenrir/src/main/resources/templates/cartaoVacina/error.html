@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"	
+				xmlns:data="http://www.thymeleaf.org/extras/data"			
+				xmlns:th="http://www.thymeleaf.org">
+<th:block th:each="mensagem : ${mensagens}">
+	<div class="row js-error">	
+		<div class="col-sm-4" >	
+			<span th:text="${mensagem}"></span>
+		</div>
+	</div>
+</th:block>
+
+</html>

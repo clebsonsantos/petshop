@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	xmlns:crowde="http://crowde.com.br"
+	layout:decorate="~{layout/LayoutPadrao}">
+
+<head>
+<title>Nova Ficha Clínica</title>
+<link rel="stylesheet" type="text/css"
+	th:href="@{/layout/stylesheets/vendors/bootstrap-switch.min.css}" />
+<link rel="stylesheet" type="text/css"
+	th:href="@{/layout/stylesheets/vendors/bootstrap-clockpicker.min.css}" />
+<link rel="stylesheet" type="text/css"
+	th:href="@{/layout/stylesheets/vendors/bootstrap-datepicker.min.css}" />
+
+</head>
+
+<body>
+	<section layout:fragment="conteudo"
+		class="cw-layout-content  js-content">
+		<div class="page-header">
+			<div class="container-fluid">
+				<h1>Cadastro de Ficha Clínica</h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<form method="POST" th:object="${fichaClinica}"
+				class="form-vertical  js-form-loading" th:action="@{/fichas/novo}">
+				<crowde:message />
+
+				<div class="row" align="right">
+					<div class="col-sm-10">
+						<a th:unless="${fichaClinica.nova}" class="btn  btn-primary"
+							th:href="@{/relatorios/fichaClinica/{idConsulta} (idConsulta=${consulta.id})}">Imprimir</a>
+					</div>
+				</div>
+
+				<div class="row">
+
+
+
+					<div class="col-sm-12">
+						<h1 style="margin-bottom: 20px;">
+							<span class="label label-default">Dados da Consulta</span>
+						</h1>
+						<div class="row">
+							<div class="form-group col-sm-4">
+								<h4
+									th:text="|Nome do Animal: ${consulta.prontuario.animal.nome}|">Animal</h4>
+								<h4
+									th:text="|Idade: ${consulta.prontuario.animal.dataNascimento}|">Espécie</h4>
+								<h4 th:text="|Peso: ${consulta.prontuario.animal.peso} Kg|">Espécie</h4>
+								<h4
+									th:text="|Endereço: ${consulta.prontuario.animal.cliente.endereco.logradouro.descricao}|">Cliente</h4>
+								<h4
+									th:text="|Cidade: ${consulta.prontuario.animal.cliente.endereco.logradouro.cidade.descricao}|">Cliente</h4>
+
+
+							</div>
+							<div class="form-group col-sm-4">
+								<h4
+									th:text="|Espécie: ${consulta.prontuario.animal.raca.especie.descricao}|">Espécie</h4>
+								<h4 th:text="|Pelagem: ${consulta.prontuario.animal.pelagem}|">Espécie</h4>
+								<h4
+									th:text="|Proprietário: ${consulta.prontuario.animal.cliente.nome}|">Cliente</h4>
+								<h4
+									th:text="|Número: ${consulta.prontuario.animal.cliente.endereco.numero}|">Cliente</h4>
+								<h4
+									th:text="|Estado: ${consulta.prontuario.animal.cliente.endereco.logradouro.cidade.estado.descricao}|">Cliente</h4>
+
+
+							</div>
+							<div class="form-group col-sm-4">
+								<h4
+									th:text="|Raça: ${consulta.prontuario.animal.raca.descricao}|">Espécie</h4>
+								<h4 th:text="|Sexo: ${consulta.prontuario.animal.sexo}|">Espécie</h4>
+								<h4
+									th:text="|Telefone: ${consulta.prontuario.animal.cliente.telefoneCelular}|">Cliente</h4>
+								<h4
+									th:text="|Bairro: ${consulta.prontuario.animal.cliente.endereco.logradouro.bairro}|">Cliente</h4>
+								<h4
+									th:text="|CEP: ${consulta.prontuario.animal.cliente.endereco.logradouro.cep}|">Cliente</h4>
+
+							</div>
+						</div>
+
+						<h4 th:text="|Data da consulta: ${consulta.dataConsulta}|">Data
+							da Consulta</h4>
+
+					</div>
+				</div>
+
+
+				<!-- IF situação da consulta permite edicao -->
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<h1 style="margin-bottom: 20px;">
+								<span class="label label-default">Ficha Cliníca</span>
+							</h1>
+
+							<div class="row" style="align-content: center;">
+
+								<div class="form-group  col-sm-4">
+									<label class="control-label">Vermifugação</label>
+
+									<div>
+										<input th:if="${fichaClinica.editavel}" type="checkbox"
+											class="js-status" data-size="small" data-on-color="danger"
+											data-on-text="Não" data-off-text="Sim" checked="checked"
+											th:field="*{vermifugacao}" />
+
+										<input th:unless="${fichaClinica.editavel}" disabled="disabled" type="checkbox"
+											class="js-status" data-size="small" data-on-color="danger"
+											data-on-text="Não" data-off-text="Sim" checked="checked"
+											th:field="*{vermifugacao}" />
+
+
+									</div>
+								</div>
+
+								<div class="form-group col-sm-2 fr-required">
+
+									<label for="temperatura" class="control-label">Temp</label> 
+									
+									<input
+										th:if="${fichaClinica.editavel}" 
+										id="temperatura" type="text"
+										class="form-control js-decimal" th:field="*{temperatura}" /> 
+										
+									<input
+										th:unless="${fichaClinica.editavel}" disabled="disabled" 
+										id="temperatura" type="text"
+										class="form-control js-decimal" th:field="*{temperatura}" /> 
+										
+										<span class="input-group-addon">Cº</span>
+
+								</div>
+							</div>
+
+							<br> Data Retorno
+							<div class="col-sm-4 input-group js-data"
+								style="width: 30%; margin-bottom: 2px">
+
+								<span class="input-group-addon"> <span
+									class="glyphicon glyphicon-calendar"></span>
+								</span> 
+
+								<input th:if="${fichaClinica.editavel}" id="dataRetorno"
+									th:field="*{dataRetorno}" type="text" class="form-control" />
+
+								<input th:unless="${fichaClinica.editavel}" disabled="disabled" id="dataRetorno"
+									th:field="*{dataRetorno}" type="text" class="form-control" />
+
+							</div>
+
+							<textarea th:if="${fichaClinica.editavel}" id="diagnostico"
+								style="margin: 0px 332px 0px 0px; width: 530px; height: 358px;"
+								class="form-control" placeholder="Dados gerais da ficha"
+								th:field="*{ficha}"></textarea>
+
+
+							<textarea th:if="${fichaClinica.editavel}" id="diagnostico"
+								style="margin: 0px 332px 0px 0px; width: 530px; height: 137px;"
+								class="form-control" placeholder="Diagnóstico Provável"
+								th:field="*{diagnostico}"> Diagnóstico Provável</textarea>
+
+							<textarea th:if="${fichaClinica.editavel}" id="diagnostico"
+								style="margin: 0px 332px 0px 0px; width: 530px; height: 137px;"
+								class="form-control" placeholder="Exames Solicitados"
+								th:field="*{examesSolicitados}">Exames Solicitados</textarea>
+
+							<textarea th:if="${fichaClinica.editavel}" id="diagnostico"
+								style="margin: 0px 332px 0px 0px; width: 530px; height: 137px;"
+								class="form-control" placeholder="Tratamento"
+								th:field="*{tratamento}">Tratamento</textarea>
+
+							<textarea th:unless="${fichaClinica.editavel}"
+								disabled="disabled" id="diagnostico"
+								style="margin: 0px 332px 0px 0px; width: 530px; height: 358px;"
+								class="form-control" placeholder="Dados gerais da ficha"
+								th:field="*{ficha}"></textarea>
+
+
+							<textarea th:unless="${fichaClinica.editavel}"
+								disabled="disabled" id="diagnostico"
+								style="margin: 0px 332px 0px 0px; width: 530px; height: 137px;"
+								class="form-control" placeholder="Diagnóstico Provável"
+								th:field="*{diagnostico}"> Diagnóstico Provável</textarea>
+
+							<textarea th:unless="${fichaClinica.editavel}"
+								disabled="disabled" id="diagnostico"
+								style="margin: 0px 332px 0px 0px; width: 530px; height: 137px;"
+								class="form-control" placeholder="Exames Solicitados"
+								th:field="*{examesSolicitados}">Exames Solicitados</textarea>
+
+							<textarea th:unless="${fichaClinica.editavel}"
+								disabled="disabled" id="diagnostico"
+								style="margin: 0px 332px 0px 0px; width: 530px; height: 137px;"
+								class="form-control" placeholder="Tratamento"
+								th:field="*{tratamento}">Tratamento</textarea>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="row" style="clear: both; margin-left: 3px">
+						<div class="col-lg-12">
+							<button class="btn  btn-danger">Cancelar</button>
+
+							<button th:if="${fichaClinica.editavel}" type="submit"
+								class="btn  btn-primary">Salvar</button>
+							<button th:unless="${fichaClinica.editavel}" disabled="disabled"
+								type="submit" class="btn  btn-primary">Salvar</button>
+
+
+							<a th:unless="${fichaClinica.nova}" class="btn  btn-primary"
+								th:href="@{/relatorios/fichaClinica/{idConsulta} (idConsulta=${consulta.id})}">Imprimir</a>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</section>
+
+
+	<th:block layout:fragment="js-auxiliar">
+
+		<script
+			th:src="@{/layout/javascripts/vendors/bootstrap-switch.min.js}"></script>
+		<script
+			th:src="@{/layout/javascripts/vendors/jquery-clockpicker.min.js}"></script>
+		<script
+			th:src="@{/layout/javascripts/vendors/bootstrap-datepicker.js}"></script>
+		<script
+			th:src="@{/layout/javascripts/vendors/bootstrap-datepicker.pt-BR.min.js}"></script>
+		<script th:src="@{/layout/javascripts/vendors/handlebars-v4.0.11.js}"></script>
+		<script th:src="@{/javascript/cliente.pesquisa-rapida.js}"></script>
+
+		<script type="text/javascript">
+    		$('.js-status').bootstrapSwitch();
+    	</script>
+
+		<script type="text/javascript">        
+	        $('.js-data input').datepicker({
+	            language: "pt-BR",
+	            orientation: "bottom left",
+	            autoclose: true,
+	            todayHighlight: true,
+	            todayBtn: "linked",
+	
+	        });
+	        
+	        $('.js-hours').clockpicker({
+	            placement: 'bottom',
+	            align: 'left',
+	            donetext: 'Ok',
+	            'default': 'now'
+	        });
+        </script>
+
+	</th:block>
+</body>
+</html>

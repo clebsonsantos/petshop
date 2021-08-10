@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"	
+				xmlns:data="http://www.thymeleaf.org/extras/data"			
+				xmlns:th="http://www.thymeleaf.org">
+				
+			
+<tr th:each="cartao : ${cartaoVacinas}">
+				
+		<td class="table-clientes-col-nome"  th:text="${cartao.vacina.descricao}"></td>							
+		<td class="table-clientes-col-nome"  th:text="${#temporals.format(cartao.dataAplicacao, 'dd-MM-yyyy HH:mm')}"></td>
+		<td class="table-clientes-col-nome" th:text="${#temporals.format(cartao.dataRevacina, 'dd-MM-yyyy')}"></td>
+		<td class="table-clientes-col-nome" th:text="${cartao.dose}"></td>
+		<td class="table-clientes-col-tipo"><span class="label"
+			th:classappend="${cartao.situacao.label}"
+			th:text="${#strings.toUpperCase(cartao.situacao.descricao)}"></span></td>
+		<td  class="table-clientes-col-acoes"  th:unless="${#strings.equalsIgnoreCase(cartao.situacao.descricao,'APLICADA')}">
+			<div class="btn-group">										
+                         
+                         <a class="btn  btn-primary" 
+                         data-toggle="tooltip" data-placement="right" href="#" 
+                         data:url="@{/aplicar/{id}(id=${cartao.vacina.id})}" 
+                         title="Aplicar Vacina"><em class="fa fa-eyedropper"></em></a>
+			</div>
+		</td>
+</tr>
+<tr th:if="${#lists.isEmpty(cartaoVacinas)}">
+	<td colspan="8"> O cartão de vacina deste animal está vazio</td>                        
+</tr>
+			
+				
+</html>

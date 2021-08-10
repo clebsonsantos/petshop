@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+				xmlns:th="http://www.thymeleaf.org"
+				xmlns:data="http://www.thymeleaf.org/extras/data"
+				xmlns:crowde="http://crowde.com.br"
+				layout:decorate="~{layout/LayoutPadrao}">
+
+<head>
+    <title>Consultas</title>
+     <link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors/bootstrap-datepicker.min.css}" />
+</head>
+
+<body>
+    <section layout:fragment="conteudo" class="cw-layout-content  js-content">
+   
+        <div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>
+							Pesquisa de consultas
+						</h1>
+					</div>
+					
+					<div class="col-xs-2">
+						<div class="cw-page-header-controls">
+							<a class="btn btn-default" th:href="@{/consultas/novo}">
+								<i class="fa  fa-plus-circle"></i> <span class="hidden-xs  hidden-sm">Nova consulta</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+       	<div class="container-fluid">
+		       	<form method="GET" th:object='${consultaFilter}' class="form-vertical  js-form-loading">
+		       		<crowde:message/>
+					<div class="form-group">
+						<label for="input-produto-nome">Cliente</label>
+						<input id="clienteNome" th:field="*{clienteNome}" type="text" class="form-control">
+					</div>
+			
+					<div class="row">
+						
+						
+						<div class="col-sm-6">
+							<div class="form-group js-data">
+								<label for="input-produto-estoque">Consulta</label>
+								
+								<div class="form-inline">
+									<input id="dataInicio" th:field="*{dataInicio}" type="text" class="form-control  cw-form-control-inline-sm">
+									<label class="cw-form-label-between">até</label>
+									<input id="dataFim" th:field="*{dataFim}" type="text" class="form-control  cw-form-control-inline-sm">
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<button class="btn  btn-primary" type="submit">
+							Pesquisar
+						</button>
+					</div>
+			
+				</form>
+
+       		<div class="table-responsive">
+				<table id="tabela-produtos" class="table  table-striped  table-bordered  table-hover  table-condensed  js-sticky-table">
+					<thead class="cw-table-header-solid">
+						<tr>
+						<th class="table-pesq-col-text">Animal</th>
+							<th class="table-pesq-col-text">Cliente</th>
+							<th class="table-pesq-col-text">Telefone</th>
+							<th class="table-pesq-col-text">Veterinário</th>
+							<th class="table-pesq-col-moeda">Data</th>
+							<th class="table-pesq-col-moeda">Hora</th>
+							<th class="table-pesq-col-moeda">Valor</th>	
+							<th class="table-pesq-col-moeda">Valor Adicional</th>							
+							<th class="table-pesq-col-status">Externo</th>
+							<th class="table-pesq-col-status">Retorno</th>
+							<th class="table-pesq-col-status">Situação</th>													
+							<th class="table-pesq-col-acoes">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+					<th:block th:each="consulta : ${consultas}">
+					<tr>
+               
+						<td th:text="${consulta.prontuario.animal.nome}" align="center">Animal</td>
+						<td th:text="${consulta.prontuario.animal.cliente.nome}" align="center">Cliente</td>
+						<td th:text="${consulta.prontuario.animal.cliente.telefoneCelular}" align="center">Telefone</td>
+						<td th:text="${consulta.veterinario.nome}" align="center">Funcionário</td>
+						<td th:text="${#temporals.format(consulta.dataConsulta, 'dd-MM-yyyy')}" align="center">Data</td>
+						<td th:text="${consulta.horaConsulta}" align="center">Hora</td>
+						<td th:text="|R$ ${#numbers.formatDecimal(consulta.valor,2,2)}|" align="center">Valor</td>
+						<td th:text="|R$ ${#numbers.formatDecimal((consulta.valorAdicional!=null?consulta.valorAdicional: 0),2,2)}|" align="center">Valor</td>
+						<td class="table-pesq-col-status" th:switch="${consulta.isExterna}">
+  						  <span class="label  label-success" th:case=true>Sim</span>
+    					  <span class="label  label-danger" th:case=false>Não</span>
+    					</td>
+    					<td class="table-pesq-col-status" th:switch="${consulta.isRetorno}" >
+    						<span class="label  label-success" th:case=true>Sim</span>
+    						<span class="label  label-danger" th:case=false>Não</span>
+    					</td>
+						
+						<td class="table-pesq-col-status" >
+							<span class="label" th:text="${consulta.situacao.descricao}"  th:classappend="${consulta.situacao.label}">Confirmado</span>							
+						</td>
+						<td class="table-pesq-col-acoes">
+						
+							<div class="btn-group">
+							
+								<a class="btn  btn-default btn-xs"
+									th:classappend="${#strings.equalsIgnoreCase(consulta.situacao, 'FINALIZADO') || #strings.equalsIgnoreCase(consulta.situacao, 'CANCELADO') || 
+									#strings.equalsIgnoreCase(consulta.situacao, 'PENDENTE')} ? disabled" 
+									th:href="@{/fichas/{consultaId}(consultaId = ${consulta.id})}"
+									data-toggle="tooltip" data-placement="top" title="Ir para Ficha Cliníca" >
+
+									<i class="fa fa-book" aria-hidden="true"></i>
+								</a>
+								
+								<a class="btn  btn-default btn-xs"
+									th:classappend="${#strings.equalsIgnoreCase(consulta.situacao, 'FINALIZADO') || #strings.equalsIgnoreCase(consulta.situacao, 'CANCELADO')} ? disabled" 
+									th:href="@{/vacinacoes/{id}(id=${consulta.id})}"
+									data-toggle="tooltip" data-placement="top" title="Aplicar Vacina" >
+									<i class="fa fa-eyedropper" aria-hidden="true"></i>
+								</a>
+								<a class="btn  btn-default btn-xs"
+									th:classappend="${consulta.isPago  || #strings.equalsIgnoreCase(consulta.situacao, 'CANCELADO')} ? disabled"
+									th:href="@{/consultas/pagamento/{id}(id = ${consulta.id})}"  data-toggle="tooltip" data-placement="top" title="Realizar Pagamento" >
+									<i class="fa fa-usd" aria-hidden="true"></i>
+								</a>
+								<a class="btn  btn-default btn-xs" th:ti th:id="|id_editar_${consulta.id}|" 
+										th:href="@{/consultas/{id}(id = ${consulta.id})}" data-toggle="tooltip" data-placement="top" title="Editar">
+									<i class="fa  fa-pencil"></i>
+								</a>
+								
+								<a class="btn  btn-danger btn-xs js-exclusao-btn" 
+									th:classappend="${#strings.equalsIgnoreCase(consulta.situacao, 'FINALIZADO') || #strings.equalsIgnoreCase(consulta.situacao, 'CANCELADO')} ? disabled"									
+									th:id="|id_cancelar_${consulta.id}|" 
+									data:url="@{/consultas/{id}(id=${consulta.id})}" 
+									data:objeto="| Consulta de ${consulta.prontuario.animal.nome}|" 
+									data:excluir="false" 
+									th:href="@{/consultas/cancelar/{id}(id = ${consulta.id})}" 
+									data-toggle="tooltip" data-placement="top" title="Cancelar">
+									<i class="fa  fa-close"></i>
+								</a>
+							</div>
+						
+						</td>
+					</tr>
+					<tr th:if="${#lists.isEmpty(consultas)}">
+                       	 	<td colspan="8"> Nâo tem consulta cadastrada</td>                        
+                     </tr>
+					</th:block>
+					</tbody>
+				</table>
+  			</div>
+  
+		</div>
+    </section>
+      <th:block layout:fragment="js-auxiliar">
+        <script th:src="@{/layout/javascripts/vendors/bootstrap-datepicker.js}"></script>
+        <script th:src="@{/layout/javascripts/vendors/bootstrap-datepicker.pt-BR.min.js}"></script>
+          <script type="text/javascript">        
+        $('.js-data input').datepicker({
+            language: "pt-BR",
+            orientation: "bottom left",
+            autoclose: true,
+            todayHighlight: true
+
+        });
+        </script>
+    </th:block>
+</body>
+</html>

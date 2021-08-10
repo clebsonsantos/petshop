@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+	
+<div class="modal  fade" id="pesquisaRapidaClientes" tabindex="-1" role="dialog" th:fragment="pesquisaRapidaClientes">
+ 	<div class="modal-dialog">
+   		<div class="modal-content">
+   			<div class="modal-header">
+       			<button type="button" class="close" data-dismiss="modal"><i>&times;</i></button>
+        		<h4 class="modal-title">Pesquisa de clientes</h4>
+      		</div>
+      		
+   			<div class="modal-body">
+   				<div class="alert  alert-danger  alert-dismissible  hidden  js-mensagem-erro" role="alert">
+					<button type="button" class="close" data-dismiss="alert" ><span aria-hidden="true">&times;</span></button>
+					<div><i class="fa  fa-exclamation-circle"></i>Informe pelo menos 3 letras ou números na pesquisa</div>
+				</div>
+   			
+   			
+   				<form class="form" th:action="@{/prontuarios}">
+   				<div class="row">
+   				
+   				  <div class="form-group  col-sm-4">
+	                   
+                    	<label for="filtro">Filtro</label>
+                    		 <select id="filtro"
+									class="form-control selectpicker show-tick show-menu-arrow" data-live-search="false" spellcheck="false">
+									<option value="cliente">Cliente</option>
+									<option value="animal">Animal</option>
+									<option value="prontuario">Nº Prontuário</option>
+									<option value="cpf">CPF</option>
+									<option value="telefone">Telefone</option>
+
+								</select>
+						
+	                </div>
+	                
+		        	<div class="form-group col-sm-8">
+		            	<label class="control-label js-label-pesquisa" for="nome">Cliente</label>
+	                	<input id="nome" type="text" class="form-control js-descricao-pesquisa" placeholder="Cliente" autofocus="autofocus"/>
+	                	<input id="nome" style="display: none;" type="text" class="form-control js-mask-pesquisa" placeholder="" autofocus="autofocus"/>
+		            </div>   
+			      
+		         </div>  
+		            
+		            
+		            <a href="#" class="btn  btn-danger" data-dismiss="modal">Cancelar</a>
+		            <button type="button" class="btn  btn-primary js-pesquisa">Pesquisar</button>
+		            	
+		        </form>
+		         <div id="containerTabelaPesquisaRapidaClientes">
+		        </div>
+		        
+     		</div>
+   		</div>
+ 	</div>
+ 	
+ 	<th:block th:replace="hbs/TabelaPesquisaRapidaClientes"></th:block>
+</div>
+	
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	xmlns:crowde="http://crowde.com.br"
+	layout:decorate="~{layout/LayoutPadrao}">
+
+<head>
+<title>Pagamento da Consulta</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo"
+		class="cw-layout-content  js-content">
+		<div class="page-header">
+			<div class="container-fluid">
+				<h1>Pagamento da Consulta</h1>
+			</div>
+		</div>
+		<div class="container-fluid">
+
+			<form method="POST" th:object="${consulta}"
+				class="form-vertical  js-form-loading" th:action="@{/consultas/pagamento/{idConsulta}(idConsulta=${consulta.id})}">
+				<div class="alert alert-danger hidden js-alert-troco" role="alert"><span> O troco tem que ser maior ou igual a 0 zero.</span></div>
+			 	<crowde:message/>
+			 	
+			 	<input type="hidden" th:field="*{id}"/>
+			 	<input type="hidden" th:field="*{valor}"/>
+			 	<input type="hidden" th:field="*{valorAdicional}"/>				
+				<div class="row">
+					<div class="col-sm-3">
+						<h1 style="margin-bottom: 20px;">
+							<span class="label label-default">Dados da Consulta</span>
+						</h1>
+						<div class="row">
+							<div class="form-group col-sm-12">
+								<h2
+									th:text="|Cliente: ${consulta.prontuario.animal.cliente.nome}|">Cliente</h2>
+								<h4
+									th:text="|Telefone: ${consulta.prontuario.animal.cliente.telefoneCelular}|">Cliente</h4>
+								<h4
+									th:text="|Nome do Animal: ${consulta.prontuario.animal.nome}|">Animal</h4>
+								<h4
+									th:text="|Espécie: ${consulta.prontuario.animal.raca.especie.descricao}|">Espécie</h4>
+								<h4
+									th:text="|Raça: ${consulta.prontuario.animal.raca.descricao}|">Espécie</h4>
+								<h4 th:text="|Data da consulta: ${#temporals.format(consulta.dataConsulta, 'dd-MM-yyyy')}|">Data
+									da Consulta</h4>
+
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-9">
+					<div class="row">
+						<div class="col-sm-4">					
+						<label for="valorPago" class="control-label">Valor pago</label>
+			            	<div class="form-group">
+			                    <div class="input-group"  > 
+					             	<span class="input-group-addon">
+						        		<span class="glyphicon glyphicon-usd"></span>
+						    		</span>
+					                <input id="valor-pago" autofocus="autofocus" type="text" class="form-control cw-form-control-inline-sm js-decimal" th:field="*{valorPago}" />
+			                     </div>
+			                </div>	
+						</div>
+					
+						<div class="col-sm-6">
+						<label for="valorDesconto" class="control-label">Desconto</label>
+			            	<div class="form-group">
+			                    <div class="input-group"  > 
+					             	<span class="input-group-addon">
+						        		<span class="glyphicon glyphicon-usd"></span>
+						    		</span>
+					                <input id="valor-desconto" type="text" class="form-control cw-form-control-inline-sm js-decimal" th:field="*{valorDesconto}"/>
+			                     </div>
+			                </div>
+						
+						</div>
+					
+					</div>
+					<div class="row">
+						<div class="col-sm-4">						
+							<div class="control-group">
+	
+								<div class="cw-box">
+									<div class="cw-box__icon">
+										<i class="fa  fa-bank  fa-3x"></i>
+									</div>
+									<div class="cw-box__value js-decimal" id="valor-adicional"
+										th:text="|R$ ${#numbers.formatDecimal(consulta.valorAdicional,2,2)}|"></div>
+									<div class="cw-box__title">Valor Adicional</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-sm-4">						
+							<div class="control-group">
+	
+								<div class="cw-box">
+									<div class="cw-box__icon">
+										<i class="fa  fa-bank  fa-3x"></i>
+									</div>
+									<div class="cw-box__value js-decimal" id="valor-total" 
+										th:text="|R$ ${#numbers.formatDecimal(consulta.valor,2,2)}|"></div>
+									<div class="cw-box__title">Valor total</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							
+							<div class="control-group">
+	
+									<div class="cw-box">
+										<div class="cw-box__icon">
+											<i class="fa  fa-usd  fa-3x"></i>
+										</div>
+										<div class="cw-box__value js-decimal" id="valor-troco">0.0</div>
+										<div class="cw-box__title">Troco</div>
+									</div>
+	
+	
+							</div>	
+						</div>
+				</div>
+			   </div>
+				
+			</div>
+
+
+				<div class="row"  style="clear: both">
+					<div class="col-lg-12">
+						<a th:href="@{/consultas}" class="btn  btn-danger">Cancelar</a>
+						<button type="submit" class="btn  btn-primary">Efetuar Pagamento</button>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</section>
+	<th:block layout:fragment="js-auxiliar">
+		<script th:src="@{/javascript/consulta.pagamento-valor.js}"></script>		
+	</th:block>
+
+</body>
+</html>

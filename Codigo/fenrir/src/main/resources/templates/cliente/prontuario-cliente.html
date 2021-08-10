@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt" 
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:th="http://www.thymeleaf.org" 
+    xmlns:data="http://www.thymeleaf.org/extras/data"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+    layout:decorate="~{layout/LayoutPadrao}">
+
+<head>
+    <title>Cadastro Cliente</title>
+</head>
+<section layout:fragment="conteudo" class="cw-layout-content  js-content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-10">
+                    <h1 th:text="|Prontuário do cliente ${cliente.nome}|">
+                            
+                        </h1>
+                </div>
+                <div class="col-xs-2">
+                    <div class="cw-page-header-controls">
+                        <a class="btn btn-default" th:href="@{/clientes}" data-toggle="tooltip" data-placement="bottom" title="Voltar para consulta de clientes">
+                                <i class="fa fa-arrow-left"></i> <span class="hidden-xs  hidden-sm">Clientes</span>
+                            </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+       
+        
+       <div class="form-group">
+       		<a class="btn btn-default" th:href="|@{/animais/novo/}${cliente.id}|" data-toggle="tooltip" data-placement="right" title="Adicionar novo animal">
+            	<i class="fa  fa-plus-circle"></i> <span class="hidden-xs  hidden-sm">Novo animal</span>
+			</a>
+       </div>
+        
+        
+        <div class="form-group">
+            <div class="table-responsive  fr-tabela-simples">
+                <table id="tabela-produtos" class="table  table-hover">
+                    <thead class="cw-table-header-solid">
+                        <tr>
+                            <th class="cw-table-checkbox">
+                            </th>
+                            
+                            <th class="table-pesq-col-text">Nome</th>
+                            <th class="table-pesq-col-moeda">Nascimento</th>
+                            <th class="table-pesq-col-moeda">Sexo</th>
+                            <th class="table-pesq-col-text">Raça</th>
+                            <th class="table-pesq-col-text">Status</th>
+                            <th class="table-pesq-col-acoes">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    
+		                            
+                        <tr th:each="animal : ${cliente.animais}" >
+                            
+                            <td>
+                                <div class="fr-tabela-item__coluna fr-tabela-item__coluna--foto">                                    
+                                    <img th:src="@{/fotos/thumbnail.{foto}(foto=${animal.imagemOuMock})}" class="img-responsive" />
+                                </div>
+                            </td>
+                            <td class="table-pesq-col-text" th:text="${animal.nome}"></td>
+                            <td class="table-pesq-col-moeda" th:text="${#temporals.format(animal.dataNascimento, 'dd-MM-yyyy')}"></td>
+                            <td class="table-pesq-col-text" th:text="${animal.sexo} "></td>
+                            <td class="table-pesq-col-text" th:text="${animal.raca.descricao}"></td>
+                            <td class="table-pesq-col-text">
+                                <span class="label" th:classappend="${animal.statusAnimal ? 'label-info' : 'label-danger' } " th:text="${animal.statusAnimal ? 'Vivo' : 'Morto'}">Confirmado</span></td>
+                            <td class="table-pesq-col-acoes">
+                                <div class="btn-group">
+                                	<a class="btn  btn-default js-prontuario-btn" data:url="@{/consultas/prontuarios}"
+                                		data:objeto="${animal.prontuario.id}"
+                                    	data-toggle="tooltip" data-placement="top" title="Listar Prontuário">
+                                    	<i class="fa  fa-archive"></i>
+                                    </a>
+                                    
+                                    <a class="btn  btn-default" th:href="@{/animais/{id}(id=${animal.id})}" 
+                                    	data-toggle="tooltip" data-placement="top" title="Editar">
+                                    	<i class="fa  fa-pencil"></i>
+                                    </a>
+                                    <a class="btn  btn-default" 
+                                    	data-toggle="tooltip" th:href="@{/vacinacoes/cartao/{id}(id=${animal.id})}" data-placement="top" title="Vacinação">
+                                        <i class="fa fa-list-alt" aria-hidden="true"></i>
+                                    </a>
+                                    <a class="btn  btn-danger" 
+                                    	data-toggle="tooltip" data-placement="top" title="Excluir">
+                                        <i class="fa  fa-trash"></i>
+									</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(cliente.animais)}">
+                       	 	<td colspan="8"> Nenum animal encontrado</td>                        
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Prontuário
+                    </div>
+                    <div class="fr-field-action__icon js-img-loading" style="display: none;">
+                          	<img th:src="@{/imagens/mini-loading.gif}"/>
+                      </div>
+                    <div class="panel-body">
+                        <div class="caixa-tempo js-timeline-prontuario">
+                           
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6"></div>
+            <div class="form-group col-sm-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Informações</div>
+                    <div class="panel-body">
+                        <h1 style="margin-bottom: 20px;"><span class="label label-default" >Dados</span></h1>
+                        <div class="row">
+                            <div class="form-group col-sm-6">
+                                <span th:text="|RG: ${cliente.rg}|"></span>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <span th:text="|Nascimento: ${#temporals.format(cliente.dataNascimento, 'dd-MM-yyyy')}|"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-4">
+                                <span th:text="|Sexo: ${cliente.sexo}|"></span>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <span class="label" th:classappend="${cliente.vip}? label-primary: label-default" th:text=" (${cliente.vip? 'VIP': 'COMUM'})">Comum</span>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <span th:text="|Tipo: ${cliente.tipoCliente}|"></span>
+                            </div>
+                        </div>
+                        <h1 style="margin-bottom: 20px;"><span class="label label-default" >Contatos</span></h1>
+                        <div class="row">
+                            <div class="form-group col-sm-6">
+                                <span th:text="|Principal: ${cliente.telefoneCelular}|"></span>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <span th:text="|Auxiliar: ${cliente.telefoneFixo}|"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span th:text="|E-mail: ${cliente.email}|"></span>
+                        </div>
+                        <h1 style="margin-bottom: 20px;"><span class="label label-default" >Endereço</span></h1>
+                        <div class="form-group">
+                            <span th:text="|Logradouro: ${cliente.endereco.logradouroAtual} - Nº ${cliente.endereco.numero}|"></span>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-4">
+                                <span th:text="| Bairro: ${cliente.endereco.logradouro.bairro}|"></span>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <span th:text="|${cliente.endereco.logradouro.cidade.descricao}-${cliente.endereco.logradouro.cidade.estado.uf}|"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span th:text="|Referência: ${cliente.endereco.pontoReferencia}|"></span>
+                        </div>
+                        <h1 style="margin-bottom: 20px;"><span class="label label-default" >Observações</span></h1>
+                        <div class="form-group">
+                            <span th:text="${cliente.observacao}" style="text-align: justify;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+ <th:block layout:fragment="js-auxiliar">  
+       
+		<script th:src="@{/javascript/cliente.prontuario-animal.js}"></script>		         
+       
+    </th:block>
+</html>

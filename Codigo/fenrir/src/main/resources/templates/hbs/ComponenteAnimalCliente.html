@@ -1,0 +1,31 @@
+<script id="tabela-animal-cliente" type="text/x-handlebars-template">
+
+			{{#if .}}				
+				
+				<div class="fr-tabela-item__coluna fr-tabela-item__coluna--foto">
+        			<img th:src="@{/imagens/animal-pata.png}" class="img-responsive"/>
+        		</div>
+        		
+        		<div class="fr-tabela-item__coluna fr-tabela-item__coluna--detalhes">
+        			<span class="fr-tabela-componente-nome">{{nomeAnimal}}</span>
+        			<span class="label label-default">CLIENTE {{vip}}</span>
+        			<span class="fr-tabela-componente-origem">{{raca}}</span>
+        		</div>	
+        		<div class="fr-tabela-item__coluna fr-tabela-item__coluna--valores">
+        			<div class="fr-tabela-componente-valor-pequeno">       			
+        				<span>Pelagem {{pelagem}}</span>
+        			</div>
+				</div>			
+				
+			{{else}}
+				<div class="fr-tabela-animais__vazio">
+					<i class="fa fa-paw"></i> 
+					<span>Você ainda não adicionou nenhum animal.</span>
+				</div>
+			{{/if}}
+
+
+
+
+
+</script>

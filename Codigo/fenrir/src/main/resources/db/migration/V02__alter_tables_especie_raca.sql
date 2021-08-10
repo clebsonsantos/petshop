@@ -1,0 +1,8 @@
+ALTER TABLE  especie ADD COLUMN data_cadastro TIMESTAMP NOT NULL;
+
+ALTER TABLE  raca ADD COLUMN data_cadastro TIMESTAMP NOT NULL;
+
+
+
+
+

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+				xmlns:th="http://www.thymeleaf.org"
+				xmlns:data="http://www.thymeleaf.org/extras/data"
+				xmlns:crowde="http://crowde.com.br"
+				layout:decorate="~{layout/LayoutPadrao}">
+
+<head>
+    <title>Nova Consulta</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors/bootstrap-clockpicker.min.css}" />   
+    <link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors/bootstrap-datepicker.min.css}" />
+    
+</head>
+
+<body>
+    <section layout:fragment="conteudo" class="cw-layout-content  js-content">
+        <div class="page-header">
+            <div class="container-fluid">
+                <h1>Cadastro de consultas</h1>
+            </div>
+        </div>
+        <div class="container-fluid">
+        <form method="POST" th:object="${consulta}" class="form-vertical  js-form-loading" 
+        	th:action="${consulta.nova} ? @{/consultas/novo} : @{/consultas/{id}(id=${consulta.id})}">
+         <crowde:message/>
+      
+      	<input type="hidden" th:field="*{id}"/>
+      	      
+        <div class="row">        
+	         <div class="form-group col-sm-6" crowde:classforerror="prontuario">
+		        <label class="control-label" for="nomeCliente">Cliente</label>
+				<div class="input-group">
+				
+				      <input th:if="${consulta.nova && (consulta.prontuario == null || consulta.prontuario.animal == null) }"  id="nomeCliente" type="text"  class="form-control"  placeholder="Clique na lupa para pesquisar o cliente" disabled/>
+				      <input th:unless="${consulta.nova && (consulta.prontuario == null || consulta.prontuario.animal == null) } "  th:value="${consulta.prontuario.animal.cliente.nome}" id="nomeCliente" type="text"  class="form-control " disabled />
+				     
+				       <input id="codigoProntuario" type="hidden" th:field="*{prontuario.id}"/>
+				      <span class="input-group-btn">
+				        <a class="btn  btn-default  js-tooltip" th:classappend="${!consulta.nova} ? disabled " type="button" title="Pesquisa avançada"
+				        		data-toggle="modal" data-target="#pesquisaRapidaClientes" >
+				        	<i class="glyphicon  glyphicon-search"></i>
+				        </a>
+				      </span>
+				  </div>
+			</div>
+			  <div class="form-group  col-sm-6" crowde:classforerror="veterinario">
+                    <label for="profissional" class="control-label">Veterinário</label>             
+                    <select id="veterinario" class="form-control selectpicker" data-live-search="true" th:field="*{veterinario}" >       
+                    	<option value="">Selecione o veterinário</option>                         
+                        <option  th:each="funcionario : ${funcionarios}"  th:value="${funcionario.id}" th:text="${funcionario.nome}">nome</option> 
+                    </select>
+             </div>
+        </div>
+         
+        
+        <div class="row">
+	        <div class="col-sm-3">
+	        
+            	<div class="form-group" crowde:classforerror="dataConsulta">
+            	<label for="data-consulta" class="control-label">Data Consulta</label>
+                    <div class="input-group js-data"  > 
+		             	<span class="input-group-addon">
+			        		<span class="glyphicon glyphicon-calendar"></span>
+			    		</span>
+		                <input id="data-consulta" th:field="*{dataConsulta}" type="text" class="form-control"/>
+                     </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+            	<div class="form-group js-hours" crowde:classforerror="horaConsulta">
+            	 	<label for="hora-consulta" class="control-label">Hora Consulta</label>
+	            	<div class="input-group" data-autoclose="true" >
+	                     <span class="input-group-addon">
+	        				<span class="glyphicon glyphicon-time"></span>
+	    				</span>
+	                     <input id="hora-consulta" th:field="*{horaConsulta}" type="text" class="form-control"/>                    
+	    			</div>
+                </div>
+            </div>   
+            
+            <div class="col-sm-3">
+            <div class="form-group" crowde:classforerror="valor">
+	            <label for="valor" class="control-label">Valor</label>
+	            <div class="input-group">	            	
+				  <span class="input-group-addon">R$</span>
+				  <input type="text" id="valor" class="form-control js-decimal" th:field="*{valor}" aria-label="Amount (to the nearest dollar)">			  
+				</div>  
+			</div>
+			</div>
+			<div class="form-group">
+			<div class="col-sm-3">
+	            <label for="valorAdicional" class="control-label" >Valor Adicional</label>
+	            <div class="input-group">	            	 
+				  <span class="input-group-addon">R$</span>
+				  <input type="text" id="valorAdicional" class="form-control js-decimal" disabled="true" th:field="*{valorAdicional}" aria-label="Amount (to the nearest dollar)">			  
+				</div>  
+			</div>
+			</div>
+        </div>
+        
+        
+        <div class="row">
+                
+				<div class="form-group  col-sm-3">   
+				<label  class="control-label">Tipo</label>                 
+                    <div>
+                        <div class="checkbox  checkbox-inline">
+                            <input id="isRetorno" type="checkbox" th:field="*{isRetorno}" value="on"/>
+                            <label for="isRetorno">Retorno</label>
+                        </div>
+                        <div class="checkbox  checkbox-inline">
+                            <input id="isExterna" type="checkbox" onclick="ativarValorAdicional()" th:field="*{isExterna}" value="on"/>
+                            <label for="isExterna">Externo</label>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="form-group  col-sm-3">
+                    <label for="stat">Situação</label>                        
+                    <select id="status" class="form-control selectpicker" data-live-search="true" th:field="*{situacao}" >                                
+                       <option  th:each="situacao : ${situacoes}" th:value="${situacao}"  th:text="${situacao.descricao}">status</option>
+                    </select>
+             	</div>
+         </div>
+        <div class="fr-tabela-animais">
+        	<div class="fr-tabela-item">
+        	
+        		<div id="containerComponenteAnimaCliente">	
+        		<div class="js-editavel-prontuario" th:unless="${consulta.nova && (consulta.prontuario == null || consulta.prontuario.animal == null)}">
+					<div class="fr-tabela-item__coluna fr-tabela-item__coluna--foto">
+	        			<img th:src="@{/fotos/thumbnail.{foto}(foto=${consulta.prontuario.animal.imagemOuMock})}" class="img-responsive" />
+	        		</div>
+	        		
+	        		<div class="fr-tabela-item__coluna fr-tabela-item__coluna--detalhes">
+	        			<span class="fr-tabela-componente-nome" th:text="${consulta.prontuario.animal.nome}" ></span>
+	        			<span class="label " th:classappend="${consulta.prontuario.animal.cliente.vip} ?label-primary :label-default" th:text="${consulta.prontuario.animal.cliente.vip} ? 'CLIENTE VIP' : 'CLIENTE COMUM'"></span>
+	        			<span class="fr-tabela-componente-origem"  th:text="${consulta.prontuario.animal.raca.descricao}"></span>
+	        		</div>	
+	        		<div class="fr-tabela-item__coluna fr-tabela-item__coluna--valores">
+	        			<div class="fr-tabela-componente-valor-pequeno">       			
+	        				<span th:text="|Pelagem ${consulta.prontuario.animal.pelagem}|"></span>
+	        			</div>
+					</div>	
+				</div>	        
+        		</div>
+        		<div th:if="${consulta.nova && (consulta.prontuario == null || consulta.prontuario.animal == null)}" class="fr-tabela-animais__vazio js-sem-animais">
+					<i class="fa fa-paw"></i> 
+					<span>Você ainda não adicionou nenhum animal.</span>
+				</div>
+        	
+        	
+        	</div>
+        
+        
+			 <!-- <div class="fr-tabela-animais__vazio">
+				<i class="fa fa-paw"></i> 
+				<span>Você ainda não adicionou nenhum animal.</span>
+			</div> -->
+		</div>
+		<div class="row" style="clear: both">
+				<div class="col-lg-12">
+					<a th:href="@{/consultas}" class="btn  btn-danger">Cancelar</a>
+					<button type="submit" class="btn  btn-primary">Salvar</button>					
+				</div>
+			</div>
+			
+			</form>
+        <th:block th:replace="hbs/ComponenteAnimalCliente"></th:block>
+        </div>
+        
+        <th:block th:replace="cliente/PesquisaRapidaClientes :: pesquisaRapidaClientes"></th:block>
+    </section>
+    
+    
+    <th:block layout:fragment="js-auxiliar">
+    <script th:src="@{/layout/javascripts/vendors/jquery-clockpicker.min.js}"></script>
+        <script th:src="@{/layout/javascripts/vendors/bootstrap-datepicker.js}"></script>
+        <script th:src="@{/layout/javascripts/vendors/bootstrap-datepicker.pt-BR.min.js}"></script>        
+        <script th:src="@{/layout/javascripts/vendors/handlebars-v4.0.11.js}"></script>      
+		<script th:src="@{/javascript/cliente.pesquisa-rapida.js}"></script>		         
+        <script type="text/javascript">        
+	        $('.js-data input').datepicker({
+	            language: "pt-BR",
+	            orientation: "bottom left",
+	            autoclose: true,
+	            todayHighlight: true,
+	            todayBtn: "linked",
+	
+	        });
+	        
+	        $('.js-hours').clockpicker({
+	            placement: 'bottom',
+	            align: 'left',
+	            donetext: 'Ok',
+	            'default': 'now'
+	        });
+	        function ativarValorAdicional() {
+				checkBoxExterno = document.getElementById("isExterna").checked;				
+				valorAdicionalInput = document.getElementById("valorAdicional");
+				valorAdicionalInput.disabled = !checkBoxExterno;
+				if (valorAdicionalInput.disabled){
+						valorAdicionalInput.value = 0;
+					}			
+				};
+				
+				ativarValorAdicional();
+        </script>
+        
+		
+
+    </th:block>
+</body>
+</html>

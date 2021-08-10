@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <aside class="cw-layout-sidebar  js-sidebar" th:fragment="layout-sidebar">
+        <div class="cw-layout-sidebar__content">
+            <nav class="cw-menu  js-menu">
+                <ul class="cw-menu__list">
+                    <!-- <li class="cw-menu__item"><a th:href="@{/inicios}"><i
+							class="fa  fa-fw  fa-home"></i><span>Dashboard</span></a></li> -->
+							<li class="cw-menu__item"><a th:href="@{/consultas}"><i
+							class="fa fa-heartbeat"></i><span>Consultas</span></a></li>
+                    <li class="cw-menu__item  is-active"><a href="#"> <i
+							class="fa  fa-fw  fa-list"></i><span>Painel</span> <i
+							class="cw-menu__navigation-icon  fa"></i>
+					</a>
+                        <ul class="cw-menu__list  cw-menu__list--sublist">
+                            <li class="cw-menu__item  cw-menu__item--link"><a th:href="@{/clientes}">Consultar clientes</a></li>
+                            <li class="cw-menu__item  cw-menu__item--link"><a th:href="@{/funcionarios}">Consultar funcionários</a></li>                            
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </aside>
+</body>
+
+</html>

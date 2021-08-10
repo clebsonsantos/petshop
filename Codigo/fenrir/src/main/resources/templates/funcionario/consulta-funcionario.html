@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+				xmlns:th="http://www.thymeleaf.org"
+				xmlns:data="http://www.thymeleaf.org/extras/data"
+				xmlns:crowde="http://crowde.com.br"
+				layout:decorate="~{layout/LayoutPadrao}">
+
+<head>
+    <title>Consultas</title>
+     <link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors/bootstrap-datepicker.min.css}" />
+</head>
+
+<body>
+    <section layout:fragment="conteudo" class="cw-layout-content  js-content">
+        <div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>
+							Pesquisa de funcionários
+						</h1>
+					</div>
+					
+					<div class="col-xs-2">
+						<div class="cw-page-header-controls">
+							<a class="btn btn-default" th:href="@{funcionarios/novo}">
+								<i class="fa  fa-plus-circle"></i> <span class="hidden-xs  hidden-sm">Novo funcionario</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+       	<div class="container-fluid">
+		       	<form method="GET" class="form-vertical  js-form-loading">
+		
+					<div class="form-group">
+						<label for="input-produto-nome">Funcionário</label>
+						<input id="input-produto-nome" type="text" class="form-control">
+					</div>
+			
+					
+					
+					<div class="form-group">
+						<button class="btn  btn-primary" type="submit">
+							Pesquisar
+						</button>
+					</div>
+			
+				</form>
+       	
+		       	
+       		<div class="table-responsive">
+				<table id="tabela-produtos" class="table  table-striped  table-bordered  table-hover  table-condensed  js-sticky-table">
+					<thead class="cw-table-header-solid">
+						<tr>
+							<th class="cw-table-checkbox">
+								<div class="checkbox checkbox-inline">
+                                    <input id="all" type="checkbox" >
+                                    <label for="all"></label>
+                                </div>
+							</th>							
+							<th >Funcionário</th>
+							<th class="table-pesq-col-text">Telefone</th>
+							<th class="table-pesq-col-moeda">Salário</th>
+							<th class="table-pesq-col-moeda">Usuário</th>
+							<th class="table-pesq-col-text">Data Cadastro</th>
+							<th class="table-pesq-col-text">Data Edição</th>							
+							<th class="table-pesq-col-text">Data Último Acesso</th>
+																				
+							<th class="table-pesq-col-acoes">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+					<th:block th:each="funcionario : ${funcionarios}">
+					<tr>
+						<td  class="cw-table-checkbox">
+							<div class="checkbox checkbox-inline" >
+	                            <input type="checkbox" th:value="${funcionario.id}"  >
+	                        	<label ></label>
+	                     	</div>
+	                     </td>
+	                     
+	                    <td  th:text="${funcionario.nome}"></td>
+	                    <td class="table-pesq-col-text" th:text="${funcionario.telefoneCelular}"></td>
+	                    <td class="table-pesq-col-moeda" th:text="${funcionario.salario}"></td>	                    
+						<td class="table-pesq-col-text" th:text="${funcionario.usuario != null } ? ${funcionario.usuario.login} "></td>
+						<td class="table-pesq-col-text" th:text="${funcionario.usuario != null } ? ${#temporals.format(funcionario.usuario.dataCadastro, 'dd-MM-yyyy HH:mm:ss')}"></td>
+						<td class="table-pesq-col-text" th:text="${funcionario.usuario != null } ? ${#temporals.format(funcionario.usuario.dataAlteracao, 'dd-MM-yyyy HH:mm:ss')}"></td>
+						<td class="table-pesq-col-text" th:text="${funcionario.usuario != null } ? ${#temporals.format(funcionario.usuario.dataAcesso, 'dd-MM-yyyy HH:mm:ss')}"></td>	
+						
+						<td class="table-pesq-col-acoes">
+						
+							<div class="btn-group">
+							
+								<a class="btn  btn-default" th:href="|@{/usuarios/novo/}${funcionario.id}|" >
+									<i class="fa " th:classappend="${funcionario.usuario == null} ? fa-user-plus : fa-user" aria-hidden="true"></i>
+								</a>
+								
+								  <a th:id="|id_editar_${funcionario.id}|" 
+		                            th:href="@{/funcionarios/{id}(id=${funcionario.id})}" 
+		                            class="btn  btn-default" data-toggle="tooltip" data-placement="bottom" 
+		                            title="Editar"><em class="fa fa-pencil-square-o"></em></a>
+								
+								<a class="btn  btn-danger">
+									<i class="fa  fa-trash"></i>
+								</a>
+							</div>
+						
+						</td>
+					</tr>
+					</th:block>
+					
+				
+					</tbody>
+				</table>
+  			</div>
+  
+		</div>
+    </section>
+      <th:block layout:fragment="js-auxiliar">
+        <script th:src="@{/layout/javascripts/vendors/bootstrap-datepicker.js}"></script>
+        <script th:src="@{/layout/javascripts/vendors/bootstrap-datepicker.pt-BR.min.js}"></script>
+          <script type="text/javascript">        
+        $('.js-data input').datepicker({
+            language: "pt-BR",
+            orientation: "bottom left",
+            autoclose: true,
+            todayHighlight: true
+
+        });
+        </script>
+    </th:block>
+</body>
+</html>

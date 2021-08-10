@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+				xmlns:th="http://www.thymeleaf.org"
+				xmlns:data="http://www.thymeleaf.org/extras/data"
+				xmlns:crowde="http://crowde.com.br"
+				layout:decorate="~{layout/LayoutPadrao}">
+
+<head>
+    <title>Vacinação</title>
+    
+</head>
+
+<body>
+    <section layout:fragment="conteudo" class="cw-layout-content  js-content">
+        <div class="page-header">
+            <div class="container-fluid">
+               <div class="row">
+					<div class="col-xs-8">						
+						<h1 th:text="|Cartão de vacina do paciente ${animal.nome}|"></h1>
+					</div>
+				</div>          
+            </div>
+        </div>
+		<div class="container-fluid">
+			<form method="POST" th:action="@{/vacinacoes/vacinar}" id="formCadastroCartaoVacina">
+			 <div class="alert alert-danger hidden js-messagem-cadastro-cartao" role="alert"></div>
+			   <input id="id-prontuario" type="hidden" th:field="${animal.prontuario.id}" class="form-control"/>
+			   <input id="id-consulta" type="hidden" th:field="${consulta.id}" class="form-control"/>
+				<div class="row">
+					<div class="form-group  col-sm-4 fr-required">
+                        <label for="especie" class="control-label" >Vacina</label>
+                        <div class="fr-field-action">
+                            <select id="vacina" class="form-control selectpicker" data-live-search="true">
+                                <option value="">Selecione a vacina</option>
+                                <option  th:each="vacina : ${vacinas}" th:value="${vacina.id}" th:text="|${vacina.descricao} / R$ ${vacina.valor}|">
+	                                
+								</option>
+                            </select>                            
+                        </div>
+                    </div>                    
+                    
+                   <div class="form-group col-sm-4 js-data">
+                       <label for="data-revacina" class="control-label">Data Revacina</label>
+                       <input id="data-revacina" type="text" class="form-control"/>
+                   </div>
+                   
+                  <div class="form-group col-sm-4 fr-required">
+                    <label for="dose">Dose</label>
+                    <input id="dose" type="text" class="form-control"/>
+                </div>
+                </div>
+                <div class="row">
+	                <div class="form-group col-sm-12">
+	                    <label for="observacao">Observações</label>
+	                    <textarea id="observacao" rows="3" class="form-control"></textarea>
+	                </div>
+                </div>
+               <div class="row">
+                   <div class="form-group col-sm-4 ">
+	                   <div class="form-group">
+		                   <div class="btn-group ">
+							  <button type="button" class="btn btn-primary btn-sm js-cartao-aplicar-agora-btn">Aplicar agora</button>
+							  <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							    <span class="caret"></span>
+							    <span class="sr-only"></span>
+							  </button>
+							  <ul class="dropdown-menu">
+							    <li><a href="" class="js-cartao-aplicar-depois-btn">Aplicar depois</a></li>							    
+							  </ul>
+							</div>
+						</div>
+              		</div>
+				</div>
+			</form>
+			
+			
+				<div class="table-responsive fr-tabela-simples">
+					<table id="tabela-facina" class="table  table-hover">
+						<thead class="cw-table-header-solid">
+							<tr>							
+								<th class="table-clientes-col-nome">Vacina</th>
+								<th class="table-clientes-col-nome">Aplicada em</th>
+								<th class="table-clientes-col-nome">Revacina em</th>
+								<th class="table-clientes-col-nome">Dose</th>
+								<th class="table-clientes-col-tipo">Situação</th>	
+								<th class="table-clientes-col-acoes">Ações</th>						
+							</tr>
+						</thead>
+						<tbody class="js-cartao-vacina-container">
+							<tr th:each="cartao : ${animal.prontuario.cartaoVacinas}">
+								
+								<td class="table-clientes-col-nome"  th:text="${cartao.vacina.descricao}"></td>							
+								<td class="table-clientes-col-nome"  th:text="${#temporals.format(cartao.dataAplicacao, 'dd-MM-yyyy HH:mm')}"></td>
+								<td class="table-clientes-col-nome" th:text="${#temporals.format(cartao.dataRevacina, 'dd-MM-yyyy')}"></td>
+								<td class="table-clientes-col-nome" th:text="${cartao.dose}"></td>
+								<td class="table-clientes-col-tipo"><span class="label"
+									th:classappend="${cartao.situacao.label}"
+									th:text="${#strings.toUpperCase(cartao.situacao.descricao)}"></span></td>
+								<td  class="table-clientes-col-acoes"  th:unless="${#strings.equalsIgnoreCase(cartao.situacao.descricao,'APLICADA')}">
+									<div class="btn-group">										
+			                            
+			                            <a class="btn  btn-primary" 
+			                            data-toggle="tooltip" data-placement="right" href="#" 
+			                            data:url="@{/aplicar/{id}(id=${cartao.vacina.id})}" 
+			                            title="Aplicar Vacina"><em class="fa fa-eyedropper"></em></a>
+									</div>
+								</td>
+							</tr>
+							 <tr th:if="${#lists.isEmpty(animal.prontuario.cartaoVacinas)}">
+	                       	 	<td colspan="8"> O cartão de vacina deste animal está vazio</td>                        
+	                        </tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		
+	</section>
+	<th:block layout:fragment="js-auxiliar">       
+      <script th:src="@{/javascript/cartao-vacina.cadastro-rapido.js}"></script>
+        <script type="text/javascript">
+      
+        $('.js-data input').datepicker({
+            language: "pt-BR",
+            orientation: "bottom left",
+            autoclose: true,
+            todayHighlight: true,
+            todayBtn: "linked"
+
+        });
+        
+        
+       
+        </script>
+    </th:block>
+</body>
+</html>
+        
