@@ -1,5 +1,7 @@
 package com.crowde.fenrir.security;
 
+import java.util.logging.*;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -23,11 +25,14 @@ public class AppUserDetailsService implements UserDetailsService {
 	@Autowired
 	private Usuarios usuarios;
 	
+	private static final Logger logger = Logger.getLogger(AppUserDetailsService.class.getName());
 	
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 		Optional<Usuario> usuarioOptional =	usuarios.porLoginEAtivo(login);		
 		Usuario usuario = usuarioOptional.orElseThrow(() -> new UsernameNotFoundException("Usuário e/ou senha incorretos"));
+        logger.info("Iniciando checagem de permissões do usuário.");
+
 		
 		return new UsuarioSistema(usuario, getPermissoes(usuario));
 	}
@@ -37,7 +42,7 @@ public class AppUserDetailsService implements UserDetailsService {
 		
 		Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 		List<String> permissoes =  usuarios.permissoes(usuario);		
-		
+
 		permissoes.forEach(p -> authorities.add(new SimpleGrantedAuthority(p.toUpperCase())));
 		
 		return authorities;

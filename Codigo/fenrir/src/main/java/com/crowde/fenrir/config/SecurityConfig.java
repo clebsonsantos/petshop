@@ -41,9 +41,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 		.authorizeRequests()	
 		
-			.antMatchers("/funcionarios/**").hasRole(Permissao.CADASTRAR_FUNCIONARIO)			
-			.antMatchers("/clientes/**").hasRole(Permissao.CADASTRAR_CLIENTE)
-			.antMatchers("/consultas/**").hasRole(Permissao.CADASTRAR_CONSULTA)
+//			.antMatchers("/funcionarios/**").hasRole(Permissao.CADASTRAR_FUNCIONARIO)			
+//			.antMatchers("/clientes/**").hasRole(Permissao.CADASTRAR_CLIENTE)
+//			.antMatchers("/consultas/**").hasRole(Permissao.CADASTRAR_CONSULTA)
 			//.antMatchers("/animais/**").hasRole(Permissao.CADASTRAR_ANIMAL)
 			.anyRequest().authenticated()	
 			
